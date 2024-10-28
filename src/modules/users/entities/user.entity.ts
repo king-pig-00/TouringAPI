@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -24,8 +24,38 @@ export class User {
   lastName: string;
 
   @Column()
-  password: string;
+  companyId: number;
 
   @Column()
-  role: number;
+  positionId: number;
+
+  @Column()
+  phoneNumber: string;
+
+  @Column()
+  countryId: number;
+
+  @Column()
+  state: string;
+
+  @Column()
+  city: string;
+
+  @Column()
+  address: string;
+
+  @Column()
+  zipcode: string;
+
+  @Column()
+  isActive: string;
+
+  @Column()
+  password: string;
+
+  @Column({ default: 0 })
+  roleId: number;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
 }
