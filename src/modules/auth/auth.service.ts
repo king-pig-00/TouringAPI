@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { UsersService } from '../users/users.service';
@@ -26,7 +30,6 @@ export class AuthService {
 
   async signIn(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
-
     if (
       user &&
       (await this.passwordService.comparePassword(password, user.password))
@@ -36,16 +39,23 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: user.role,
       };
-      const jwtToken = await this.jwtService.signAsync(payload);
-      const data = {
+      const jwtToken = await this.jwtService.signAsync({
         ...payload,
-        token: jwtToken,
+        roleId: user.roleId,
+      });
+      return {
+        success: true,
+        data: {
+          ...payload,
+          token: jwtToken,
+        },
       };
-      return data;
     } else {
-      throw new UnauthorizedException();
+      return {
+        success: false,
+        error: 'Invalid email or password',
+      };
     }
   }
 
@@ -64,10 +74,18 @@ export class AuthService {
 
     try {
       const res = await this.usersService.create(createUserDto);
-      // const data = await this.signIn(res.email, password);
-      // return data;
+      return {
+        success: true,
+        data: {
+          id: res.id,
+          email: res.email,
+          firstname: res.firstName,
+          lastName: res.lastName,
+          token: '',
+        },
+      };
     } catch (error) {
-      throw new UnauthorizedException();
+      throw new ConflictException('Email already exists');
     }
   }
 
