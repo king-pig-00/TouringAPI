@@ -48,6 +48,7 @@ export class AuthService {
         success: true,
         data: {
           ...payload,
+          redirectUrl: user.roleId === 0 ? '/dashboard' : '/operator',
           token: jwtToken,
         },
       };
