@@ -9,28 +9,19 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity('users')
-export class User {
+@Entity('companies')
+export class Company {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  email: string;
+  companyName: string;
 
   @Column()
-  firstName: string;
+  companyDescription: string;
 
   @Column()
-  lastName: string;
-
-  @Column()
-  companyId: number;
-
-  @Column()
-  positionId: number;
-
-  @Column()
-  phoneNumber: string;
+  companyLogo: string;
 
   @Column()
   countryId: number;
@@ -42,20 +33,32 @@ export class User {
   city: string;
 
   @Column()
+  zipCode: string;
+
+  @Column()
   address: string;
 
   @Column()
-  zipcode: string;
+  fax: string;
 
   @Column()
-  isActive: string;
+  email: string;
 
   @Column()
-  password: string;
+  generalPhone: string;
 
-  @Column('simple-array')
-  roles: string[];
+  @Column()
+  administrator: string;
+
+  @Column()
+  companyWebsite: string;
+
+  @Column()
+  timeZone: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  updateAt: Date;
 }
