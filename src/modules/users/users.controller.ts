@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Get,
 } from '@nestjs/common';
 
 import { AuthGuard, Public } from '../../common/guards/auth.guard';

@@ -8,6 +8,7 @@ import { AuthGuard } from './common/guards/auth.guard';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { CompanyModule } from './modules/company/company.module';
 
 require('dotenv').config();
 
@@ -26,6 +27,7 @@ require('dotenv').config();
     CoreModule,
     AuthModule,
     UsersModule,
+    CompanyModule,
   ],
   providers: [
     {

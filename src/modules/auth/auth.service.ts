@@ -42,13 +42,13 @@ export class AuthService {
       };
       const jwtToken = await this.jwtService.signAsync({
         ...payload,
-        roleId: user.roleId,
+        roles: user.roles,
       });
       return {
         success: true,
         data: {
           ...payload,
-          redirectUrl: user.roleId === 0 ? '/dashboard' : '/operator',
+          redirectUrl: user.roles.includes('admin') ? '/operator' : '/user',
           token: jwtToken,
         },
       };
