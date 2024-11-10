@@ -33,16 +33,19 @@ export class User {
   phoneNumber: string;
 
   @Column()
-  countryId: number;
-
-  @Column()
-  state: string;
-
-  @Column()
   city: string;
 
   @Column()
   address: string;
+
+  @Column()
+  address2: string;
+
+  @Column()
+  countryId: number;
+
+  @Column()
+  state: string;
 
   @Column()
   zipcode: string;
@@ -58,4 +61,7 @@ export class User {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  updateAt: Date;
 }

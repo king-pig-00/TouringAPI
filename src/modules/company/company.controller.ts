@@ -25,20 +25,16 @@ export class CompanyController {
   @HttpCode(HttpStatus.OK)
   @Get('GetCompanyInfo')
   getCompanyInfo(@Body() request: { id: number }) {
-    return this.companyService.getCompanyInfo(request.id);
+    return this.companyService.findById(request.id);
   }
 
-  // @UseGuards(AuthGuard)
-  // @Roles(Role.Admin)
-  // @HttpCode(HttpStatus.OK)
-  // @Post('SaveUserDetail')
-  // updateUserProfile(@Body() signUpDto: Record<string, any>) {
-  //   return this.companySettingsService.updateUserProfile(
-  //     signUpDto.email,
-  //     signUpDto.firstName,
-  //     signUpDto.lastName,
-  //   );
-  // }
+  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @HttpCode(HttpStatus.OK)
+  @Post('SaveCompanyInfo')
+  saveCompanyInfo(@Body() config: CompanyInfoDto) {
+    return this.companyService.updateById(config);
+  }
 
   // @UseGuards(AuthGuard)
   // @Roles(Role.Admin)
