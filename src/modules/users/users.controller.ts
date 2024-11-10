@@ -6,6 +6,7 @@ import {
   HttpStatus,
   UseGuards,
   Get,
+  Request,
 } from '@nestjs/common';
 
 import { AuthGuard, Public } from '../../common/guards/auth.guard';
@@ -16,6 +17,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @Get('GetUserInfo')
+  getUserInfo(@Request() req) {
+    const user = this.usersService.findById(req.user.id);
+    return user;
+  }
+
   @HttpCode(HttpStatus.OK)
   @Post('SaveUserDetail')
   updateUserProfile(@Body() signUpDto: Record<string, any>) {

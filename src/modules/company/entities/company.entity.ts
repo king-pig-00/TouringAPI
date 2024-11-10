@@ -18,40 +18,43 @@ export class Company {
   companyName: string;
 
   @Column()
+  email: string;
+
+  @Column()
   companyDescription: string;
 
   @Column()
-  companyLogo: string;
-
+  generalPhone: string;
+  
   @Column()
-  countryId: number;
-
-  @Column()
-  state: string;
-
-  @Column()
-  city: string;
-
-  @Column()
-  zipCode: string;
+  fax: string;
 
   @Column()
   address: string;
 
   @Column()
-  fax: string;
+  address2: string;
 
   @Column()
-  email: string;
+  city: string;
 
   @Column()
-  generalPhone: string;
+  country: string;
 
   @Column()
-  administrator: string;
+  state: string;
+
+  @Column()
+  zipCode: string;
+
+  @Column({ type: 'longtext' })
+  companyLogo: string;
 
   @Column()
   companyWebsite: string;
+
+  @Column()
+  administrator: string;
 
   @Column()
   timeZone: string;

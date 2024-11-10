@@ -16,22 +16,25 @@ export class CompanyInfoDto {
   @IsString()
   @IsNotEmpty()
   companyName: string;
-  
+
   @IsString()
-  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsString()
   companyDescription: string;
 
   @IsString()
-  @IsNotEmpty()
-  companyLogo: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  countryId: number;
+  generalPhone: string;
 
   @IsString()
+  fax: string;
+  @IsString()
   @IsNotEmpty()
-  state: string;
+  address: string;
+
+  @IsString()
+  address2: string;
 
   @IsString()
   @IsNotEmpty()
@@ -39,30 +42,24 @@ export class CompanyInfoDto {
 
   @IsString()
   @IsNotEmpty()
+  country: string;
+
+  @IsString()
+  @IsNotEmpty()
+  state: string;
+
+  @IsString()
+  @IsNotEmpty()
   zipCode: string;
 
   @IsString()
   @IsNotEmpty()
-  address: string;
+  companyLogo: string;
 
   @IsString()
-  @IsNotEmpty()
-  fax: string;
-
-  @IsString()
-  @IsNotEmpty()
-  email: string;
-
-  @IsString()
-  @IsNotEmpty()
-  generalPhone: string;
-
-  @IsString()
-  @IsNotEmpty()
   companyWebsite: string;
 
   @IsString()
-  @IsNotEmpty()
   administrator: string;
 
   @IsString()
