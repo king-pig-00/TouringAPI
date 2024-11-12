@@ -24,8 +24,8 @@ export class CompanyController {
   @Roles(Role.Admin)
   @HttpCode(HttpStatus.OK)
   @Get('GetCompanyInfo')
-  getCompanyInfo(@Body() request: { id: number }) {
-    return this.companyService.findById(request.id);
+  getCompanyInfo(@Body() request: { companyId: number }) {
+    return this.companyService.findById(request.companyId);
   }
 
   @UseGuards(AuthGuard)
@@ -34,6 +34,14 @@ export class CompanyController {
   @Post('SaveCompanyInfo')
   saveCompanyInfo(@Body() config: CompanyInfoDto) {
     return this.companyService.updateById(config);
+  }
+
+  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @HttpCode(HttpStatus.OK)
+  @Get('GetDepartmentList')
+  getDepartmentList(@Body() request: { companyId: number }) {
+    return this.companyService.findAllDepartments(request.companyId);
   }
 
   // @UseGuards(AuthGuard)

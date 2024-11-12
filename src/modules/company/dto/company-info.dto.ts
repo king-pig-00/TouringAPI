@@ -11,7 +11,7 @@ import { BeforeInsert } from 'typeorm';
 export class CompanyInfoDto {
   @IsInt()
   @IsNotEmpty()
-  id: number;
+  companyId: number;
 
   @IsString()
   @IsNotEmpty()
