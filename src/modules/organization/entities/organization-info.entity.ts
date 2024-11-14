@@ -7,25 +7,23 @@ import {
   OneToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
+  OneToOne,
 } from 'typeorm';
 
-@Entity('companies')
-export class Company {
+@Entity('organization_info')
+export class OrganizationInfo {
   @PrimaryGeneratedColumn()
-  companyId: number;
-
-  @Column()
-  companyName: string;
+  orgInfoId: number;
 
   @Column()
   email: string;
 
   @Column()
-  companyDescription: string;
+  description: string;
 
   @Column()
   generalPhone: string;
-  
+
   @Column()
   fax: string;
 
@@ -48,10 +46,10 @@ export class Company {
   zipCode: string;
 
   @Column({ type: 'longtext' })
-  companyLogo: string;
+  logo: string;
 
   @Column()
-  companyWebsite: string;
+  website: string;
 
   @Column()
   administrator: string;
