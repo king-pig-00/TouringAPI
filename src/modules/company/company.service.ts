@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from './entities/company.entity';
 import { Department } from './entities/department.entity';
 import { CompanyInfoDto } from './dto/company-info.dto';
+import { DepartmentDto } from './dto/department.dto';
 
 @Injectable()
 export class CompanyService {
@@ -20,8 +21,42 @@ export class CompanyService {
     private departmentRepository: Repository<Department>,
   ) {}
 
+  async createDepartment(req: DepartmentDto) {
+    const department: Partial<Department> = {
+      companyId: req.companyId,
+      parentDepartmentId: req.parentDepartmentId,
+      departmentName: req.departmentName,
+    };
+    const data = await this.departmentRepository.save(department);
+    return {
+      success: true,
+      data,
+    };
+  }
+
+  async updateDepartment(config: DepartmentDto) {
+    await this.departmentRepository.update(config.departmentId, config);
+    const data = this.findDepartment(config.departmentId);
+    if (!data) {
+      throw new Error('Data not found');
+    }
+    return {
+      success: true,
+      data,
+    };
+  }
+
+  async findDepartment(departmentId: number): Promise<Department> {
+    const company = await this.departmentRepository.findOne({
+      where: { departmentId },
+    });
+    return company;
+  }
+
   async findById(companyId: number): Promise<Company> {
-    const company = await this.companyRepository.findOne({ where: { companyId } });
+    const company = await this.companyRepository.findOne({
+      where: { companyId },
+    });
     return company;
   }
 
