@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { OrganizationInfo } from './entities/organization-info.entity';
 import { Organization } from './entities/organization.entity';
-import { CompanyInfoDto } from './dto/company-info.dto';
+import { OrgDetailDto } from './dto/organization-info.dto';
 import { OrganizationDto } from './dto/organization.dto';
 
 @Injectable()
@@ -21,12 +21,32 @@ export class OrganizationService {
     private orgRepo: Repository<Organization>,
   ) {}
 
-  create(req: OrganizationDto): Promise<Organization> {
-    const user = this.orgRepo.create(req);
-    return this.orgRepo.save(user);
+  async create(req: OrganizationDto): Promise<Organization> {
+    try {
+      const existedDepartment = (await this.findAll()).find(
+        (dep) => dep.orgName === req.orgName,
+      );
+      if (existedDepartment) {
+        throw new ConflictException();
+      }
+
+      const user = this.orgRepo.create({
+        parentOrgId: req.parentOrgId,
+        orgName: req.orgName,
+      });
+      return this.orgRepo.save(user);
+    } catch (error) {
+      Logger.error(error);
+      throw new UnauthorizedException();
+    }
   }
 
-  findAll(parentOrgId: number): Promise<Organization[]> {
+  async findAll(): Promise<Organization[]> {
+    const res = await this.orgRepo.find();
+    return res;
+  }
+
+  findAllByPId(parentOrgId: number): Promise<Organization[]> {
     return this.orgRepo.find({
       where: { parentOrgId },
     });
@@ -36,20 +56,28 @@ export class OrganizationService {
     return this.orgRepo.findOneBy({ orgId });
   }
 
-  async findById(orgId: number): Promise<Organization> {
-    const res = await this.orgRepo.findOne({
+  findById(orgId: number): Promise<Organization> {
+    const res = this.orgRepo.findOne({
       where: { orgId },
       relations: ['info'],
     });
     return res;
   }
 
-  async update(id: number, req: OrganizationDto): Promise<Organization> {
-    await this.orgRepo.update(id, req);
-    return this.findOne(id);
+  async update(orgId: number, req: OrganizationDto): Promise<Organization> {
+    await this.orgRepo.update(orgId, req);
+    return this.findOne(orgId);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.orgRepo.delete(id);
+  async updateDetail(
+    orgInfoId: number,
+    req: OrgDetailDto,
+  ): Promise<OrganizationInfo> {
+    await this.orgInfoRepo.update(orgInfoId, req);
+    return this.orgInfoRepo.findOneBy({ orgInfoId });
+  }
+
+  async remove(orgId: number): Promise<void> {
+    await this.orgRepo.delete(orgId);
   }
 }

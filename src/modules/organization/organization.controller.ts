@@ -14,12 +14,10 @@ import { Response } from 'express';
 import { AuthGuard, RolesGuard } from '../../common/guards';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Role } from '../../constants/role.enum';
-import { ApiResponse } from '../../common/interfaces/response.interface';
 
 import { OrganizationService } from './organization.service';
-import { CompanyInfoDto } from './dto/company-info.dto';
+import { OrganizationInfoDto } from './dto/organization-info.dto';
 import { OrganizationDto } from './dto/organization.dto';
-import { Organization } from './entities/organization.entity';
 
 @Controller('API/Company')
 @UseGuards(RolesGuard)
@@ -30,34 +28,81 @@ export class OrganizationController {
   @Roles(Role.Admin)
   @HttpCode(HttpStatus.OK)
   @Get('GetCompanyInfo')
-  getDetail(@Body() request: { companyId: number }) {
-    return this.organizationService.findById(request.companyId);
+  async getDetail(@Body() req: { companyId: number }, @Res() res: Response) {
+    try {
+      const result = await this.organizationService.findById(req.companyId);
+      return res.json({
+        success: true,
+        message: 'Company info retrieved successfully',
+        data: result,
+      });
+    } catch (error) {
+      throw new HttpException(
+        {
+          success: false,
+          message: 'Failed to retrieve company info',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  // @UseGuards(AuthGuard)
-  // @Roles(Role.Admin)
-  // @HttpCode(HttpStatus.OK)
-  // @Post('SaveCompanyInfo')
-  // saveCompanyInfo(@Body() config: CompanyInfoDto) {
-  //   return this.organizationService.updateById(config);
-  // }
+  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @HttpCode(HttpStatus.OK)
+  @Post('SaveCompanyInfo')
+  async saveDetail(@Body() req: OrganizationInfoDto, @Res() res: Response) {
+    try {
+      const result1 = await this.organizationService.update(req.orgId, {
+        orgId: req.orgId,
+        parentOrgId: req.parentOrgId,
+        orgName: req.orgName,
+      });
+      const result2 = await this.organizationService.updateDetail(
+        req.orgId,
+        req.info,
+      );
+      if (!result1 || !result2) {
+        throw new HttpException(
+          {
+            success: false,
+            message: 'Company data not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return res.json({
+        success: true,
+        message: 'Company info updated successfully',
+        data: '',
+      });
+    } catch (error) {
+      throw new HttpException(
+        {
+          success: false,
+          message: 'Failed to update company info',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   @UseGuards(AuthGuard)
   @Roles(Role.Admin)
   @HttpCode(HttpStatus.OK)
   @Get('GetDepartmentList')
-  async findAll(@Body() req: { companyId: number }) {
+  async findAll(@Body() req: { companyId: number }, @Res() res: Response) {
     try {
-      const users = await this.organizationService.findAll(req.companyId);
-      return {
-        status: 'success',
+      const results = await this.organizationService.findAllByPId(req.companyId);
+      return res.json({
+        success: true,
         message: 'Departments retrieved successfully',
-        data: users,
-      };
+        data: results,
+      });
     } catch (error) {
       throw new HttpException(
         {
-          status: 'error',
+          success: false,
           message: 'Failed to retrieve departments',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -69,19 +114,19 @@ export class OrganizationController {
   @Roles(Role.Admin)
   @HttpCode(HttpStatus.OK)
   @Post('SaveDepartment')
-  async save(@Body() req: OrganizationDto): Promise<ApiResponse<Organization>> {
-    if (req.orgId === 0) {
+  async save(@Body() req: OrganizationDto, @Res() res: Response) {
+    if (req.orgId === -1) {
       try {
-        const res = await this.organizationService.create(req);
-        return {
-          status: 'success',
+        const result = await this.organizationService.create(req);
+        res.json({
+          success: true,
           message: 'Department created successfully',
-          data: res,
-        };
+          data: result,
+        });
       } catch (error) {
         throw new HttpException(
           {
-            status: 'error',
+            success: false,
             message: 'Failed to create department',
           },
           HttpStatus.INTERNAL_SERVER_ERROR,
@@ -89,25 +134,25 @@ export class OrganizationController {
       }
     } else {
       try {
-        const res = await this.organizationService.update(req.orgId, req);
-        if (!res) {
+        const result = await this.organizationService.update(req.orgId, req);
+        if (!result) {
           throw new HttpException(
             {
-              status: 'error',
+              success: false,
               message: 'Department not found',
             },
             HttpStatus.NOT_FOUND,
           );
         }
-        return {
-          status: 'success',
+        return res.json({
+          success: true,
           message: 'Department updated successfully',
-          data: res,
-        };
+          data: result,
+        });
       } catch (error) {
         throw new HttpException(
           {
-            status: 'error',
+            success: false,
             message: 'Failed to update department',
           },
           HttpStatus.INTERNAL_SERVER_ERROR,
@@ -120,17 +165,17 @@ export class OrganizationController {
   @Roles(Role.Admin)
   @HttpCode(HttpStatus.OK)
   @Post('DeleteDepartment')
-  async remove(@Body() req: { departmentId: number }) {
+  async remove(@Body() req: { orgId: number }, @Res() res: Response) {
     try {
-      await this.organizationService.remove(req.departmentId);
-      return {
-        status: 'success',
+      await this.organizationService.remove(req.orgId);
+      return res.json({
+        success: true,
         message: 'Department deleted successfully',
-      };
+      });
     } catch (error) {
       throw new HttpException(
         {
-          status: 'error',
+          success: false,
           message: 'Failed to delete department',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,

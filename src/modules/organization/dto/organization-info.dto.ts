@@ -7,22 +7,23 @@ import {
   IsString,
 } from 'class-validator';
 import { BeforeInsert } from 'typeorm';
+import { OrganizationDto } from './organization.dto';
 
-export class CompanyInfoDto {
+export class OrganizationInfoDto extends OrganizationDto {
+  info: OrgDetailDto;
+}
+
+export class OrgDetailDto {
   @IsInt()
   @IsNotEmpty()
   companyId: number;
-
-  @IsString()
-  @IsNotEmpty()
-  companyName: string;
 
   @IsString()
   @IsEmail()
   email: string;
 
   @IsString()
-  companyDescription: string;
+  description: string;
 
   @IsString()
   generalPhone: string;
@@ -54,10 +55,10 @@ export class CompanyInfoDto {
 
   @IsString()
   @IsNotEmpty()
-  companyLogo: string;
+  logo: string;
 
   @IsString()
-  companyWebsite: string;
+  website: string;
 
   @IsString()
   administrator: string;
