@@ -22,23 +22,11 @@ export class OrganizationService {
   ) {}
 
   async create(req: OrganizationDto): Promise<Organization> {
-    try {
-      const existedDepartment = (await this.findAll()).find(
-        (dep) => dep.orgName === req.orgName,
-      );
-      if (existedDepartment) {
-        throw new ConflictException();
-      }
-
-      const user = this.orgRepo.create({
-        parentOrgId: req.parentOrgId,
-        orgName: req.orgName,
-      });
-      return this.orgRepo.save(user);
-    } catch (error) {
-      Logger.error(error);
-      throw new UnauthorizedException();
-    }
+    const user = this.orgRepo.create({
+      parentOrgId: req.parentOrgId,
+      orgName: req.orgName,
+    });
+    return await this.orgRepo.save(user);
   }
 
   async findAll(): Promise<Organization[]> {

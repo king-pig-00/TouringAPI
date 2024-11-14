@@ -8,6 +8,8 @@ import {
   HttpStatus,
   HttpException,
   UseGuards,
+  ConflictException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -93,7 +95,9 @@ export class OrganizationController {
   @Get('GetDepartmentList')
   async findAll(@Body() req: { companyId: number }, @Res() res: Response) {
     try {
-      const results = await this.organizationService.findAllByPId(req.companyId);
+      const results = await this.organizationService.findAllByPId(
+        req.companyId,
+      );
       return res.json({
         success: true,
         message: 'Departments retrieved successfully',
@@ -115,6 +119,12 @@ export class OrganizationController {
   @HttpCode(HttpStatus.OK)
   @Post('SaveDepartment')
   async save(@Body() req: OrganizationDto, @Res() res: Response) {
+    const existedDepartment = (await this.organizationService.findAll()).find(
+      (dep) => dep.orgName === req.orgName,
+    );
+    if (existedDepartment) {
+      throw new ConflictException();
+    }
     if (req.orgId === -1) {
       try {
         const result = await this.organizationService.create(req);
