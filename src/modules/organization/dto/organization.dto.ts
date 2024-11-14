@@ -8,20 +8,16 @@ import {
 } from 'class-validator';
 import { BeforeInsert } from 'typeorm';
 
-export class DepartmentDto {
+export class OrganizationDto {
   @IsInt()
   @IsNotEmpty()
-  departmentId: number;
+  orgId: number;
 
   @IsInt()
   @IsNotEmpty()
-  companyId: number;
-
-  @IsInt()
-  @IsNotEmpty()
-  parentDepartmentId: number;
+  parentOrgId: number;
 
   @IsString()
   @IsNotEmpty()
-  departmentName: string;
+  orgName: string;
 }

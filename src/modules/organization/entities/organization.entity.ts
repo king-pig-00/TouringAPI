@@ -6,22 +6,27 @@ import {
   ManyToMany,
   OneToMany,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
+  JoinColumn,
 } from 'typeorm';
 
-@Entity('departments')
-export class Department {
+import { OrganizationInfo } from './organization-info.entity';
+
+@Entity('organization')
+export class Organization {
   @PrimaryGeneratedColumn()
-  departmentId: number;
+  orgId: number;
 
   @Column()
-  companyId: number;
+  parentOrgId: number;
 
   @Column()
-  parentDepartmentId: number;
+  orgName: string;
 
-  @Column()
-  departmentName: string;
+  @OneToOne(() => OrganizationInfo, { eager: true })
+  @JoinColumn({ name: 'orgInfoId' })
+  info: OrganizationInfo;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
